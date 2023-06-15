@@ -2,19 +2,18 @@
 # -*- coding: utf-8 -*-
 # @author: Kun
 
+import torch
+import random
+from sentence_transformers import util
 
 from utils import get_content_between_a_b, get_api_response
-import torch
-
-import random
-
-from sentence_transformers import  util
 from global_config import lang_opt
 
 
 class RecurrentGPT:
 
     def __init__(self, input, short_memory, long_memory, memory_index, embedder):
+        print("AIWriter loaded by RecurrentGPT")
         self.input = input
         self.short_memory = short_memory
         self.long_memory = long_memory
@@ -93,7 +92,7 @@ class RecurrentGPT:
         1. Output Paragraph: the next paragraph of the novel. The output paragraph should contain around 20 sentences and should follow the input instructions.
         2. Output Memory: The updated memory. You should first explain which sentences in the input memory are no longer necessary and why, and then explain what needs to be added into the memory and why. After that you should write the updated memory. The updated memory should be similar to the input memory except the parts you previously thought that should be deleted or added. The updated memory should only store key information. The updated memory should never exceed 20 sentences!
         3. Output Instruction:  instructions of what to write next (after what you have written). You should output 3 different instructions, each is a possible interesting continuation of the story. Each output instruction should contain around 5 sentences
-        4.非常重要！请将输出信息内容全部转化为中文，注意要符合中文母语的语法和用词习惯。
+        4. 非常重要！请将输出信息内容全部转化为中文，注意要符合中文母语的语法和用词习惯。
         Here are the inputs: 
 
         Input Memory:  
