@@ -4,11 +4,15 @@
 
 import gradio as gr
 import random
-from recurrentgpt import RecurrentGPT
 from human_simulator import Human
 from sentence_transformers import SentenceTransformer
 from utils import get_init, parse_instructions
-from global_config import lang_opt
+from global_config import lang_opt, llm_model_opt
+
+if "openai" == llm_model_opt:
+    from recurrentgpt import RecurrentGPT as AIWriter
+elif "vicuna" == llm_model_opt:
+    from recurrent_llm import RecurrentLLM as AIWriter
 
 # from urllib.parse import quote_plus
 # from pymongo import MongoClient
@@ -144,7 +148,7 @@ def step(short_memory, long_memory, instruction1, instruction2, instruction3, cu
         writer_start_input = human.output
 
         # Init writerGPT
-        writer = RecurrentGPT(input=writer_start_input, short_memory=start_short_memory, long_memory=[
+        writer = AIWriter(input=writer_start_input, short_memory=start_short_memory, long_memory=[
             init_paragraphs['Paragraph 1'], init_paragraphs['Paragraph 2'], init_paragraphs['Paragraph 3']], memory_index=None, embedder=embedder)
         cache["writer"] = writer
         cache["human"] = human
@@ -188,7 +192,7 @@ def controled_step(short_memory, long_memory, selected_instruction, current_para
         writer_start_input = human.output
 
         # Init writerGPT
-        writer = RecurrentGPT(input=writer_start_input, short_memory=start_short_memory, long_memory=[
+        writer = AIWriter(input=writer_start_input, short_memory=start_short_memory, long_memory=[
             init_paragraphs['Paragraph 1'], init_paragraphs['Paragraph 2']], memory_index=None, embedder=embedder)
         cache["writer"] = writer
         cache["human"] = human

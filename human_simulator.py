@@ -3,8 +3,13 @@
 # @author: Kun
 
 
-from utils import get_content_between_a_b, parse_instructions, get_api_response
-from global_config import lang_opt
+
+from global_config import lang_opt, llm_model_opt
+
+if "openai" == llm_model_opt:
+    from utils import get_content_between_a_b, parse_instructions, get_api_response
+elif "vicuna" == llm_model_opt:
+    from vicuna_utils import get_content_between_a_b, parse_instructions, get_api_response
 
 
 class Human:
