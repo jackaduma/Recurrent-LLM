@@ -5,4 +5,5 @@
 
 lang_opt = "zh" # "en"
 
-llm_model_opt = "openai" # "ChatGLM-6B" # "Vicuna-7B"
+# llm_model_opt = "openai"
+llm_model_opt = "vicuna"
