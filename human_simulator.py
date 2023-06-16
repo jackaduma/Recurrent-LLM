@@ -10,17 +10,22 @@ if "openai" == llm_model_opt:
     from utils import get_content_between_a_b, parse_instructions, get_api_response
 elif "vicuna" == llm_model_opt:
     from vicuna_utils import get_content_between_a_b, parse_instructions, get_api_response
-
+elif "chatglm" == llm_model_opt:
+    from chatglm_utils import get_content_between_a_b, parse_instructions, get_api_response
+elif "baichuan" == llm_model_opt:
+    from baichuan_utils import get_content_between_a_b, parse_instructions, get_api_response
 
 class Human:
 
-    def __init__(self, input, memory, embedder):
+    def __init__(self, input, memory, embedder, model, tokenizer):
         self.input = input
         if memory:
             self.memory = memory
         else:
             self.memory = self.input['output_memory']
         self.embedder = embedder
+        self.model = model
+        self.tokenizer = tokenizer
         self.output = {}
 
     def prepare_input(self):
@@ -142,11 +147,11 @@ class Human:
     """
         print(prompt+'\n'+'\n')
 
-        response = get_api_response(prompt)
+        response = get_api_response(self.model, self.tokenizer, prompt)
 
         plan = self.parse_plan(response)
         while plan == None:
-            response = get_api_response(prompt)
+            response = get_api_response(self.model, self.tokenizer, prompt)
             plan = self.parse_plan(response)
 
         if response_file:
@@ -185,10 +190,10 @@ class Human:
         prompt = self.prepare_input()
         print(prompt+'\n'+'\n')
 
-        response = get_api_response(prompt)
+        response = get_api_response(self.model, self.tokenizer, prompt)
         self.output = self.parse_output(response)
         while self.output == None:
-            response = get_api_response(prompt)
+            response = get_api_response(self.model, self.tokenizer, prompt)
             self.output = self.parse_output(response)
         if response_file:
             with open(response_file, 'a', encoding='utf-8') as f:
