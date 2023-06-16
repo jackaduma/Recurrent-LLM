@@ -11,9 +11,24 @@ from global_config import lang_opt, llm_model_opt
 if "openai" == llm_model_opt:
     from recurrentgpt import RecurrentGPT as AIWriter
     from utils import get_init, parse_instructions
+
 elif "vicuna" == llm_model_opt:
     from recurrent_llm import RecurrentLLM as AIWriter
     from vicuna_utils import get_init, parse_instructions
+    from models.vicuna_bin import load_model
+    llm_tokenizer, llm_model = load_model()
+
+elif "chatglm" == llm_model_opt:
+    from recurrent_llm import RecurrentLLM as AIWriter
+    from chatglm_utils import get_init, parse_instructions
+    from models.chatglm_hf import load_model
+    llm_tokenizer, llm_model = load_model()
+
+elif "baichuan" == llm_model_opt:
+    from recurrent_llm import RecurrentLLM as AIWriter
+    from baichuan_utils import get_init, parse_instructions
+    from models.baichuan_hf import load_model
+    llm_tokenizer, llm_model = load_model()
 
 # from urllib.parse import quote_plus
 # from pymongo import MongoClient
@@ -29,7 +44,6 @@ _CACHE = {}
 
 # Build the semantic search model
 embedder = SentenceTransformer('multi-qa-mpnet-base-cos-v1')
-
 
 def init_prompt(novel_type, description):
     if description == "":
@@ -97,7 +111,7 @@ def init(novel_type, description, request: gr.Request):
     cookie = request.headers['cookie']
     cookie = cookie.split('; _gat_gtag')[0]
     # prepare first init
-    init_paragraphs = get_init(text=init_prompt(novel_type, description))
+    init_paragraphs = get_init(text=init_prompt(novel_type, description), model=llm_model, tokenizer=llm_tokenizer)
     # print(init_paragraphs)
     start_input_to_human = {
         'output_paragraph': init_paragraphs['Paragraph 3'],
@@ -143,7 +157,7 @@ def step(short_memory, long_memory, instruction1, instruction2, instruction3, cu
             instruction1, instruction2, instruction3]
         init_paragraphs = cache["init_paragraphs"]
         human = Human(input=start_input_to_human,
-                      memory=None, embedder=embedder)
+                      memory=None, embedder=embedder, model=llm_model, tokenizer=llm_tokenizer)
         human.step()
         start_short_memory = init_paragraphs['Summary']
         writer_start_input = human.output
@@ -187,7 +201,7 @@ def controled_step(short_memory, long_memory, selected_instruction, current_para
         start_input_to_human['output_instruction'] = selected_instruction
         init_paragraphs = cache["init_paragraphs"]
         human = Human(input=start_input_to_human,
-                      memory=None, embedder=embedder)
+                      memory=None, embedder=embedder, model=llm_model, tokenizer=llm_tokenizer)
         human.step()
         start_short_memory = init_paragraphs['Summary']
         writer_start_input = human.output
@@ -382,7 +396,8 @@ with gr.Blocks(title="RecurrentGPT", css="footer {visibility: hidden}", theme="d
                                 label="Selected Instruction (editable)", max_lines=5, lines=5) if "en" == lang_opt else gr.Textbox(
                                 label="在上一步骤中被选择的 (可编辑)", max_lines=5, lines=5)
 
-                btn_step = gr.Button("Next Step", variant="primary") if "en" == lang_opt else gr.Button("下一步", variant="primary")
+                btn_step = gr.Button("Next Step", variant="primary") if "en" == lang_opt else gr.Button(
+                    "下一步", variant="primary")
 
         btn_init.click(init, inputs=[novel_type, description], outputs=[
             short_memory, long_memory, written_paras, instruction1, instruction2, instruction3])
