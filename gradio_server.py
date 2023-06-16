@@ -6,13 +6,14 @@ import gradio as gr
 import random
 from human_simulator import Human
 from sentence_transformers import SentenceTransformer
-from utils import get_init, parse_instructions
 from global_config import lang_opt, llm_model_opt
 
 if "openai" == llm_model_opt:
     from recurrentgpt import RecurrentGPT as AIWriter
+    from utils import get_init, parse_instructions
 elif "vicuna" == llm_model_opt:
     from recurrent_llm import RecurrentLLM as AIWriter
+    from vicuna_utils import get_init, parse_instructions
 
 # from urllib.parse import quote_plus
 # from pymongo import MongoClient
