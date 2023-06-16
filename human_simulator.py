@@ -72,7 +72,7 @@ class Human:
         1. Extended Paragraph: Extend the new paragraph written by the ChatGPT assistant to twice the length of the paragraph written by your ChatGPT assistant.
         2. Selected Plan: Copy the plan proposed by your ChatGPT assistant.
         3. Revised Plan: Revise the selected plan into an outline of the next paragraph.
-        4.非常重要！请将输出信息内容全部转化为中文，注意要符合中文母语的语法和用词习惯。
+        4. 非常重要！请将输出信息内容全部转化为中文，注意要符合中文母语的语法和用词习惯。
         
         Previously written paragraph:  
         {previous_paragraph}
