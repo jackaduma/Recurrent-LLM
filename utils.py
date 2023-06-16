@@ -43,8 +43,17 @@ def get_content_between_a_b(a, b, text):
         if match:
             return match.group(1).strip()
         else:
-            # 处理找不到匹配内容的情况
-            return "翻译时出现错误请重试"  # 或者返回其他默认值或采取其他的处理方式
+            if "1" in a or "2" in a or "3" in a: 
+                a = ''.join(a.split(" "))
+            if "1" in b or "2" in b or "3" in b:
+                b = "".join(b.split(" "))
+            
+            match = re.search(f"{a}(.*?)\n{b}", text, re.DOTALL)
+            if match:
+                return match.group(1).strip()
+            else:
+                # 处理找不到匹配内容的情况
+                return "翻译时出现错误请重试"  # 或者返回其他默认值或采取其他的处理方式
     else:
         raise Exception(f"not supported language: {lang_opt}")
 
@@ -56,7 +65,7 @@ def get_init(init_text=None, text=None, response_file=None):
     """
     if not init_text:
         response = get_api_response(text)
-        print(response)
+        print("response: {}".format(response))
 
         if response_file:
             with open(response_file, 'a', encoding='utf-8') as f:
@@ -116,7 +125,7 @@ def get_init(init_text=None, text=None, response_file=None):
         paragraphs['Paragraph 2'] = get_content_between_a_b(
             '段落 2：', '段落 3：', response)
         paragraphs['Paragraph 3'] = get_content_between_a_b(
-            '段落 3：', '总结', response)
+            '段落 3：', '总结：', response)
         paragraphs['Summary'] = get_content_between_a_b('总结：', '指令 1', response)
         paragraphs['Instruction 1'] = get_content_between_a_b(
             '指令 1：', '指令 2：', response)
