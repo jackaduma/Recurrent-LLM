@@ -21,3 +21,7 @@ export OPENAI_API_KEY = "your key"
 download vicuna model. and config it in [models/vicuna_bin.py](models/vicuna_bin.py)
 
 ## ChatGLM
+
+## WebUI
+
+<img src="./imgs/webui-snapshot.png">
