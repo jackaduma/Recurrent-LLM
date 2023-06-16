@@ -11,6 +11,8 @@ from global_config import lang_opt, llm_model_opt
 if "openai" == llm_model_opt:
     from recurrentgpt import RecurrentGPT as AIWriter
     from utils import get_init, parse_instructions
+    llm_model = None
+    llm_tokenizer = None
 
 elif "vicuna" == llm_model_opt:
     from recurrent_llm import RecurrentLLM as AIWriter
