@@ -100,7 +100,7 @@ def init(novel_type, description, request: gr.Request):
     # print(init_paragraphs)
     start_input_to_human = {
         'output_paragraph': init_paragraphs['Paragraph 3'],
-        'input_paragraph': '\n\n'.join([init_paragraphs['Paragraph 1'], init_paragraphs['Paragraph 2']]),
+        'input_paragraph': '\n\n'.join([init_paragraphs['Paragraph 1'], init_paragraphs['Paragraph 2'], init_paragraphs['Paragraph 3']]),
         'output_memory': init_paragraphs['Summary'],
         "output_instruction": [init_paragraphs['Instruction 1'], init_paragraphs['Instruction 2'], init_paragraphs['Instruction 3']]
     }
@@ -121,7 +121,7 @@ Paragraphs:
 
 {start_input_to_human['input_paragraph']}"""
     long_memory = parse_instructions(
-        [init_paragraphs['Paragraph 1'], init_paragraphs['Paragraph 2']])
+        [init_paragraphs['Paragraph 1'], init_paragraphs['Paragraph 2'], init_paragraphs['Paragraph 3']])
     # short memory, long memory, current written paragraphs, 3 next instructions
     return start_input_to_human['output_memory'], long_memory, written_paras, init_paragraphs['Instruction 1'], init_paragraphs['Instruction 2'], init_paragraphs['Instruction 3']
 
@@ -193,7 +193,7 @@ def controled_step(short_memory, long_memory, selected_instruction, current_para
 
         # Init writerGPT
         writer = AIWriter(input=writer_start_input, short_memory=start_short_memory, long_memory=[
-            init_paragraphs['Paragraph 1'], init_paragraphs['Paragraph 2']], memory_index=None, embedder=embedder)
+            init_paragraphs['Paragraph 1'], init_paragraphs['Paragraph 2'], init_paragraphs['Paragraph 3']], memory_index=None, embedder=embedder)
         cache["writer"] = writer
         cache["human"] = human
         writer.step()
@@ -391,7 +391,7 @@ with gr.Blocks(title="RecurrentGPT", css="footer {visibility: hidden}", theme="d
                              instruction1, instruction2, instruction3], outputs=[selected_instruction])
 
     with gr.Tab("Model-Config"):
-        model_opt_radio = gr.Radio(["OpenAI", "ChatGLM-6B"], value="OpenAI", label="model",
+        model_opt_radio = gr.Radio(["OpenAI", "ChatGLM-6B", "Vicuna-7B"], value="OpenAI", label="model",
                                    info="select language you preferred. Default is English.",
                                    interactive=True
                                    )
