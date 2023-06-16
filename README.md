@@ -6,7 +6,7 @@ The Open Source LLM implementation of paper: RecurrentGPT: Interactive Generatio
 
 ```
 lang_opt = "zh" #  zh or en. make English or Chinese Novel
-llm_model_opt = "openai" # default is openai, it also can be "vicuna" or "chatglm"
+llm_model_opt = "openai" # default is openai, it also can be "vicuna" or "chatglm" or "baichuan" etc.
 ```
 
 ## OpenAI - ChatGPT
@@ -21,6 +21,19 @@ export OPENAI_API_KEY = "your key"
 download vicuna model. and config it in [models/vicuna_bin.py](models/vicuna_bin.py)
 
 ## ChatGLM
+
+```python
+tokenizer = AutoTokenizer.from_pretrained(model_name_or_path,trust_remote_code=True)
+model_config = AutoConfig.from_pretrained(model_name_or_path, trust_remote_code=True)
+model = AutoModel.from_pretrained(model_name_or_path, config=model_config, trust_remote_code=True)
+```
+
+## Baichuan
+
+```python
+tokenizer = AutoTokenizer.from_pretrained("baichuan-inc/baichuan-7B", trust_remote_code=True)
+model = AutoModelForCausalLM.from_pretrained("baichuan-inc/baichuan-7B", device_map="auto", trust_remote_code=True)
+```
 
 ## WebUI
 
