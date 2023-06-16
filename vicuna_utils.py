@@ -4,14 +4,12 @@
 
 
 import re
-from models.vicuna_bin import load_model, max_token, temperature, top_p
+from models.vicuna_bin import max_token, temperature, top_p
 from common import torch_gc
-from global_config import lang_opt
+from global_config import lang_opt, llm_model_opt
 
 
-tokenizer, model = load_model()
-
-def get_api_response(content: str, max_tokens=None):
+def get_api_response(model, tokenizer, content: str, max_tokens=None):
 
     if "en" == lang_opt:
         system_role_content = 'You are a helpful and creative assistant for writing novel.'
@@ -60,9 +58,15 @@ def get_api_response(content: str, max_tokens=None):
 
 def get_content_between_a_b(a, b, text):
     if "en" == lang_opt:
-        return re.search(f"{a}(.*?)\n{b}", text, re.DOTALL).group(1).strip()
+        if "vicuna" == llm_model_opt:
+            return re.search(f"{a}(.*?)\n(.*?){b}", text, re.DOTALL).group(1).strip()
+        else:
+            return re.search(f"{a}(.*?)\n{b}", text, re.DOTALL).group(1).strip()
     elif "zh" == lang_opt:
-        match = re.search(f"{a}(.*?)\n{b}", text, re.DOTALL)
+        if "vicuna" == llm_model_opt:
+            match = re.search(f"{a}(.*?)\n(.*?){b}", text, re.DOTALL)
+        else:
+            match = re.search(f"{a}(.*?)\n{b}", text, re.DOTALL)
         if match:
             return match.group(1).strip()
         else:
@@ -71,7 +75,10 @@ def get_content_between_a_b(a, b, text):
             if "1" in b or "2" in b or "3" in b:
                 b = "".join(b.split(" "))
             
-            match = re.search(f"{a}(.*?)\n{b}", text, re.DOTALL)
+            if "vicuna" == llm_model_opt:
+                match = re.search(f"{a}(.*?)\n(.*?){b}", text, re.DOTALL)
+            else:
+                match = re.search(f"{a}(.*?)\n{b}", text, re.DOTALL)
             if match:
                 return match.group(1).strip()
             else:
@@ -81,13 +88,13 @@ def get_content_between_a_b(a, b, text):
         raise Exception(f"not supported language: {lang_opt}")
 
 
-def get_init(init_text=None, text=None, response_file=None):
+def get_init(init_text=None, text=None, response_file=None, model=None, tokenizer=None):
     """
     init_text: if the title, outline, and the first 3 paragraphs are given in a .txt file, directly read
     text: if no .txt file is given, use init prompt to generate
     """
     if not init_text:
-        response = get_api_response(text)
+        response = get_api_response(model, tokenizer, text)
         print("response: {}".format(response))
 
         if response_file:

@@ -9,7 +9,7 @@ from common import torch_gc
 
 
 max_token: int = 10000
-temperature: float = 0.7
+temperature: float = 0.75
 top_p = 0.9
 
 def load_model():
