@@ -3,17 +3,20 @@
 # @author: Kun
 
 
-
+from utils import get_content_between_a_b, parse_instructions
 from global_config import lang_opt, llm_model_opt
 
 if "openai" == llm_model_opt:
-    from utils import get_content_between_a_b, parse_instructions, get_api_response
+    from utils.openai_util import get_api_response
 elif "vicuna" == llm_model_opt:
-    from vicuna_utils import get_content_between_a_b, parse_instructions, get_api_response
+    from utils.vicuna_util import get_api_response
 elif "chatglm" == llm_model_opt:
-    from chatglm_utils import get_content_between_a_b, parse_instructions, get_api_response
+    from utils.chatglm_util import get_api_response
 elif "baichuan" == llm_model_opt:
-    from baichuan_utils import get_content_between_a_b, parse_instructions, get_api_response
+    from utils.baichuan_util import get_api_response
+else:
+    raise Exception("not supported llm model name: {}".format(llm_model_opt))
+
 
 class Human:
 
@@ -69,7 +72,7 @@ class Human:
         Remember that you are writing a novel. Write like a novelist and do not move too fast when writing the plan for the next paragraph. Think about how the plan can be attractive for common readers when selecting and extending the plan. Remember to follow the length constraints! Remember that the chapter will contain over 10 paragraphs and the novel will contain over 100 chapters. And the next paragraph will be the second paragraph of the second chapter. You need to leave space for future stories.
 
         """
-            
+
         elif "zh" == lang_opt:
             input_text = f"""
             Now imagine you are a novelist writing a Chinese novel with the help of ChatGPT. You will be given a previously written paragraph (wrote by you), and a paragraph written by your ChatGPT assistant, a summary of the main storyline maintained by your ChatGPT assistant, and a plan of what to write next proposed by your ChatGPT assistant.

@@ -2,83 +2,56 @@
 # -*- coding: utf-8 -*-
 # @author: Kun
 
-
 import re
-from models.vicuna_bin import max_token, temperature, top_p
-from common import torch_gc
 from global_config import lang_opt, llm_model_opt
 
-
-def get_api_response(model, tokenizer, content: str, max_tokens=None):
-
-    if "en" == lang_opt:
-        system_role_content = 'You are a helpful and creative assistant for writing novel.'
-    elif "zh" == lang_opt:
-        system_role_content = 'You are a helpful and creative assistant for writing novel.\
-                You are must always in Chinese.重要，你需要使用中文与我进行交流。'
-    else:
-        raise Exception(f"not supported language: {lang_opt}")
-    
-    print("===> Question:")
-    print(content)
-    print("<==="+"="*100)
-
-    content = content.encode()
-    tokens = model.tokenize(content)
-
-    output = b""
-    count = 0
-    token_count=10000
-    top_k=40
-    repetition_penalty=1.1
-    for token in model.generate(tokens, 
-                                top_k=top_k, 
-                                top_p=top_p, 
-                                temp=temperature, 
-                                repeat_penalty=repetition_penalty):
-        text = model.detokenize([token])
-        # print(text)
-        output += text
-
-        count += 1
-        if count >= token_count or (token == model.token_eos()):
-            break
-    
-    response = output.decode()
-    # print("===> [vicuna][generate] response: {}".format(response))
-    
-    torch_gc()
-
-    print("===> Generated Text: ")
-    print(response)
-    print("<==="+"="*100)
-
-    return response
+if "openai" == llm_model_opt:
+    from utils.openai_util import get_api_response
+elif "vicuna" == llm_model_opt:
+    from utils.vicuna_util import get_api_response
+elif "chatglm" == llm_model_opt:
+    from utils.chatglm_util import get_api_response
+elif "baichuan" == llm_model_opt:
+    from utils.baichuan_util import get_api_response
+else:
+    raise Exception("not supported llm model name: {}".format(llm_model_opt))
 
 
 def get_content_between_a_b(a, b, text):
     if "en" == lang_opt:
         if "vicuna" == llm_model_opt:
             return re.search(f"{a}(.*?)\n(.*?){b}", text, re.DOTALL).group(1).strip()
-        else:
+        elif "openai" == llm_model_opt:
             return re.search(f"{a}(.*?)\n{b}", text, re.DOTALL).group(1).strip()
+        else:
+            raise Exception(
+                "not supported llm model name: {}".format(llm_model_opt))
+
     elif "zh" == lang_opt:
         if "vicuna" == llm_model_opt:
             match = re.search(f"{a}(.*?)\n(.*?){b}", text, re.DOTALL)
-        else:
+        elif "openai" == llm_model_opt:
             match = re.search(f"{a}(.*?)\n{b}", text, re.DOTALL)
+        else:
+            raise Exception(
+                "not supported llm model name: {}".format(llm_model_opt))
+
         if match:
             return match.group(1).strip()
         else:
-            if "1" in a or "2" in a or "3" in a: 
+            if "1" in a or "2" in a or "3" in a:
                 a = ''.join(a.split(" "))
             if "1" in b or "2" in b or "3" in b:
                 b = "".join(b.split(" "))
-            
+
             if "vicuna" == llm_model_opt:
                 match = re.search(f"{a}(.*?)\n(.*?){b}", text, re.DOTALL)
-            else:
+            elif "openai" == llm_model_opt:
                 match = re.search(f"{a}(.*?)\n{b}", text, re.DOTALL)
+            else:
+                raise Exception(
+                    "not supported llm model name: {}".format(llm_model_opt))
+
             if match:
                 return match.group(1).strip()
             else:
@@ -117,7 +90,8 @@ def get_init(init_text=None, text=None, response_file=None, model=None, tokenize
     }
 
     if "en" == lang_opt:
-        paragraphs['name'] = get_content_between_a_b('Name:', 'Outline', response)
+        paragraphs['name'] = get_content_between_a_b(
+            'Name:', 'Outline', response)
 
         paragraphs['Paragraph 1'] = get_content_between_a_b(
             'Paragraph 1:', 'Paragraph 2:', response)
@@ -146,7 +120,7 @@ def get_init(init_text=None, text=None, response_file=None, model=None, tokenize
         if paragraphs['Outline'] == '':
             paragraphs['Outline'] = get_content_between_a_b(
                 'Outline:', 'Paragraph', response)
-            
+
     elif "zh" == lang_opt:
         paragraphs['name'] = get_content_between_a_b('名称：', '概述：', response)
 
@@ -156,7 +130,8 @@ def get_init(init_text=None, text=None, response_file=None, model=None, tokenize
             '段落 2：', '段落 3：', response)
         paragraphs['Paragraph 3'] = get_content_between_a_b(
             '段落 3：', '总结：', response)
-        paragraphs['Summary'] = get_content_between_a_b('总结：', '指令 1', response)
+        paragraphs['Summary'] = get_content_between_a_b(
+            '总结：', '指令 1', response)
         paragraphs['Instruction 1'] = get_content_between_a_b(
             '指令 1：', '指令 2：', response)
         paragraphs['Instruction 2'] = get_content_between_a_b(
@@ -174,7 +149,8 @@ def get_init(init_text=None, text=None, response_file=None, model=None, tokenize
                     '概述：', 'Chapter', response)
                 break
         if paragraphs['Outline'] == '':
-            paragraphs['Outline'] = get_content_between_a_b('概述：', '段落', response)
+            paragraphs['Outline'] = get_content_between_a_b(
+                '概述：', '段落', response)
 
     return paragraphs
 

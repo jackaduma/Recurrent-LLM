@@ -6,16 +6,19 @@ import torch
 import random
 from sentence_transformers import util
 
+from utils import get_content_between_a_b
 from global_config import lang_opt, llm_model_opt
 
-if "vicuna" == llm_model_opt:
-    from vicuna_utils import get_content_between_a_b, get_api_response
-
+if "openai" == llm_model_opt:
+    from utils.openai_util import get_api_response
+elif "vicuna" == llm_model_opt:
+    from utils.vicuna_util import get_api_response
 elif "chatglm" == llm_model_opt:
-    from chatglm_utils import get_content_between_a_b, get_api_response
-
+    from utils.chatglm_util import get_api_response
 elif "baichuan" == llm_model_opt:
-    from baichuan_utils import get_content_between_a_b, get_api_response
+    from utils.baichuan_util import get_api_response
+else:
+    raise Exception("not supported llm model name: {}".format(llm_model_opt))
 
 
 class RecurrentLLM:

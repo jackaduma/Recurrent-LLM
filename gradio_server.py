@@ -6,31 +6,31 @@ import gradio as gr
 import random
 from human_simulator import Human
 from sentence_transformers import SentenceTransformer
+
+from utils import get_init, parse_instructions
 from global_config import lang_opt, llm_model_opt
 
 if "openai" == llm_model_opt:
     from recurrentgpt import RecurrentGPT as AIWriter
-    from utils import get_init, parse_instructions
     llm_model = None
     llm_tokenizer = None
 
 elif "vicuna" == llm_model_opt:
     from recurrent_llm import RecurrentLLM as AIWriter
-    from vicuna_utils import get_init, parse_instructions
     from models.vicuna_bin import load_model
     llm_tokenizer, llm_model = load_model()
 
 elif "chatglm" == llm_model_opt:
     from recurrent_llm import RecurrentLLM as AIWriter
-    from chatglm_utils import get_init, parse_instructions
     from models.chatglm_hf import load_model
     llm_tokenizer, llm_model = load_model()
 
 elif "baichuan" == llm_model_opt:
     from recurrent_llm import RecurrentLLM as AIWriter
-    from baichuan_utils import get_init, parse_instructions
     from models.baichuan_hf import load_model
     llm_tokenizer, llm_model = load_model()
+else:
+    raise Exception("not supported llm model name: {}".format(llm_model_opt))
 
 # from urllib.parse import quote_plus
 # from pymongo import MongoClient
@@ -46,6 +46,7 @@ _CACHE = {}
 
 # Build the semantic search model
 embedder = SentenceTransformer('multi-qa-mpnet-base-cos-v1')
+
 
 def init_prompt(novel_type, description):
     if description == "":
@@ -113,7 +114,8 @@ def init(novel_type, description, request: gr.Request):
     cookie = request.headers['cookie']
     cookie = cookie.split('; _gat_gtag')[0]
     # prepare first init
-    init_paragraphs = get_init(text=init_prompt(novel_type, description), model=llm_model, tokenizer=llm_tokenizer)
+    init_paragraphs = get_init(text=init_prompt(
+        novel_type, description), model=llm_model, tokenizer=llm_tokenizer)
     # print(init_paragraphs)
     start_input_to_human = {
         'output_paragraph': init_paragraphs['Paragraph 3'],
