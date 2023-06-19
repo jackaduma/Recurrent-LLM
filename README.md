@@ -15,6 +15,7 @@ llm_model_opt = "openai" # default is openai, it also can be other open-source L
 - [x] chatglm
 - [x] baichuan
 - [x] aquila
+- [x] falcon 
 
 ## OpenAI - ChatGPT
 
