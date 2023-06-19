@@ -29,6 +29,13 @@ elif "baichuan" == llm_model_opt:
     from recurrent_llm import RecurrentLLM as AIWriter
     from models.baichuan_hf import load_model
     llm_tokenizer, llm_model = load_model()
+
+elif "aquila" == llm_model_opt:
+    from recurrent_llm import RecurrentLLM as AIWriter
+    from models.aquila_fa import load_model
+    # from models.aquila_hf import load_model
+    llm_tokenizer, llm_model = load_model()
+
 else:
     raise Exception("not supported llm model name: {}".format(llm_model_opt))
 

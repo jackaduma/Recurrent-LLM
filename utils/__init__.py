@@ -13,6 +13,8 @@ elif "chatglm" == llm_model_opt:
     from utils.chatglm_util import get_api_response
 elif "baichuan" == llm_model_opt:
     from utils.baichuan_util import get_api_response
+elif "aquila" == llm_model_opt:
+    from utils.aquila_util import get_api_response
 else:
     raise Exception("not supported llm model name: {}".format(llm_model_opt))
 
@@ -23,6 +25,8 @@ def get_content_between_a_b(a, b, text):
             return re.search(f"{a}(.*?)\n(.*?){b}", text, re.DOTALL).group(1).strip()
         elif "openai" == llm_model_opt:
             return re.search(f"{a}(.*?)\n{b}", text, re.DOTALL).group(1).strip()
+        elif llm_model_opt in ["chatglm", "baichuan", "aquila"]:
+            return re.search(f"{a}(.*?)\n(.*?){b}", text, re.DOTALL).group(1).strip()
         else:
             raise Exception(
                 "not supported llm model name: {}".format(llm_model_opt))
@@ -32,6 +36,8 @@ def get_content_between_a_b(a, b, text):
             match = re.search(f"{a}(.*?)\n(.*?){b}", text, re.DOTALL)
         elif "openai" == llm_model_opt:
             match = re.search(f"{a}(.*?)\n{b}", text, re.DOTALL)
+        elif llm_model_opt in ["chatglm", "baichuan", "aquila"]:
+            match = re.search(f"{a}(.*?)\n(.*?){b}", text, re.DOTALL)
         else:
             raise Exception(
                 "not supported llm model name: {}".format(llm_model_opt))
@@ -48,6 +54,8 @@ def get_content_between_a_b(a, b, text):
                 match = re.search(f"{a}(.*?)\n(.*?){b}", text, re.DOTALL)
             elif "openai" == llm_model_opt:
                 match = re.search(f"{a}(.*?)\n{b}", text, re.DOTALL)
+            elif llm_model_opt in ["chatglm", "baichuan", "aquila"]:
+                match = re.search(f"{a}(.*?)\n(.*?){b}", text, re.DOTALL)
             else:
                 raise Exception(
                     "not supported llm model name: {}".format(llm_model_opt))

@@ -17,6 +17,8 @@ elif "chatglm" == llm_model_opt:
     from utils.chatglm_util import get_api_response
 elif "baichuan" == llm_model_opt:
     from utils.baichuan_util import get_api_response
+elif "aquila" == llm_model_opt:
+    from utils.aquila_util import get_api_response
 else:
     raise Exception("not supported llm model name: {}".format(llm_model_opt))
 
