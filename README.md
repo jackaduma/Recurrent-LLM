@@ -6,8 +6,15 @@ The Open Source LLM implementation of paper: RecurrentGPT: Interactive Generatio
 
 ```
 lang_opt = "zh" #  zh or en. make English or Chinese Novel
-llm_model_opt = "openai" # default is openai, it also can be "vicuna" or "chatglm" or "baichuan" etc.
+llm_model_opt = "openai" # default is openai, it also can be other open-source LLMs as below
 ```
+
+### Supported LLM options
+
+- [x] vicuna
+- [x] chatglm
+- [x] baichuan
+- [x] aquila
 
 ## OpenAI - ChatGPT
 
@@ -33,6 +40,25 @@ model = AutoModel.from_pretrained(model_name_or_path, config=model_config, trust
 ```python
 tokenizer = AutoTokenizer.from_pretrained("baichuan-inc/baichuan-7B", trust_remote_code=True)
 model = AutoModelForCausalLM.from_pretrained("baichuan-inc/baichuan-7B", device_map="auto", trust_remote_code=True)
+```
+
+## Aquila
+
+```python
+loader = AutoLoader(
+        "lm",
+        model_dir=state_dict,
+        model_name=model_name,
+        use_cache=True,
+        fp16=True)
+model = loader.get_model()
+tokenizer = loader.get_tokenizer()
+model.eval()
+```
+If want to use bminf, then add code as below:
+```python
+with torch.cuda.device(0):
+    model = bminf.wrapper(model, quantization=False, memory_limit=2 << 30)
 ```
 
 ## WebUI
