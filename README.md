@@ -1,8 +1,8 @@
 # Recurrent-LLM
-The Open Source LLM implementation of paper: RecurrentGPT: Interactive Generation of (Arbitrarily) Long Text
+The Open Source LLM implementation of paper: RecurrentGPT: Interactive Generation of (Arbitrarily) Long Text.[[Paper](https://arxiv.org/pdf/2305.13304v1.pdf)][[Abstract](https://arxiv.org/abs/2305.13304v1)]
 
 ## Global Config
-[global_config.py](./global_config.py)
+[[global_config.py](./global_config.py)]
 
 ```
 lang_opt = "zh" #  zh or en. make English or Chinese Novel
