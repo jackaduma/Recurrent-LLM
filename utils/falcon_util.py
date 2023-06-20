@@ -21,11 +21,19 @@ def get_api_response(model, tokenizer, content: str, max_tokens=None):
     print(content)
     print("<==="+"="*100)
 
-    inputs = tokenizer(content, return_tensors='pt')
+    inputs = tokenizer(content,
+                       return_tensors='pt',
+                       return_token_type_ids=False, #  ValueError: The following model_kwargs are not used by the model: ['token_type_ids'] (note: typos in the generate arguments will also show up in this list)
+                       )
     inputs = inputs.to('cuda:0')
-    pred = model.generate(**inputs, max_new_tokens=max_token,
-                          top_p=top_p, temperature=temperature, repetition_penalty=1.1)
-    response = tokenizer.decode(pred.cpu()[0], skip_special_tokens=True)
+    output = model.generate(**inputs,
+                          max_new_tokens=max_token,
+                          top_p=top_p,
+                          temperature=temperature,
+                          repetition_penalty=1.1,
+                        #   eos_token_id=tokenizer.eos_token_id,
+                          )
+    response = tokenizer.decode(output.cpu()[0], skip_special_tokens=True)
 
     torch_gc()
 
