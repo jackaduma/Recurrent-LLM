@@ -1,17 +1,19 @@
 pip install -U sentence-transformers
 pip install --upgrade openai
 
-pip install bitsandbytes==0.39.0
-transformers@git+https://github.com/huggingface/transformers.git
-# peft@git+https://github.com/huggingface/peft.git
-accelerate@git+https://github.com/huggingface/accelerate.git
 
+pip install bitsandbytes==0.39.0
+pip install transformers@git+https://github.com/huggingface/transformers.git
+pip install peft@git+https://github.com/huggingface/peft.git
+pip install accelerate@git+https://github.com/huggingface/accelerate.git
 
 
 llama-cpp-python@git+https://github.com/abetlen/llama-cpp-python.git
 
 
-
-
 pip install -U flagai
 pip install bminf
+
+
+pip install auto-gptq
+pip install einops

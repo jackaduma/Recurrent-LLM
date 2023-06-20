@@ -36,6 +36,11 @@ elif "aquila" == llm_model_opt:
     # from models.aquila_hf import load_model
     llm_tokenizer, llm_model = load_model()
 
+elif "falcon" == llm_model_opt:
+    from recurrent_llm import RecurrentLLM
+    from models.falcon_hf import load_model
+    llm_tokenizer, llm_model = load_model()
+
 else:
     raise Exception("not supported llm model name: {}".format(llm_model_opt))
 
