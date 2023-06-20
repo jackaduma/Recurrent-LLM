@@ -18,6 +18,8 @@ The Open Source LLM implementation of paper:
     - [**Baichuan**](#baichuan)
     - [**Aquila**](#aquila)
     - [**Falcon**](#falcon)
+- [**Usage**](#usage)
+  - [**start web server**](#start-web-server)
 - [**WebUI**](#webui)
 - [**Star-History**](#star-history)
 - [**License**](#license)
@@ -100,6 +102,16 @@ with torch.cuda.device(0):
 
 
 #### **Falcon**
+
+
+## **Usage**
+
+### **start web server**
+
+```
+python gradio_server.py
+```
+
 
 ## **WebUI**
 
