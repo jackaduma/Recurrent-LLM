@@ -1,7 +1,10 @@
 ## **Recurrent-LLM**
 The Open Source LLM implementation of paper: 
+
 **RecurrentGPT: Interactive Generation of (Arbitrarily) Long Text**.
-[[Paper](https://arxiv.org/pdf/2305.13304v1.pdf)][[Abstract](https://arxiv.org/abs/2305.13304v1)]
+
+[[Paper](https://arxiv.org/pdf/2305.13304v1.pdf)] [[arxiv](https://arxiv.org/abs/2305.13304v1)] [[HuggingFace](https://huggingface.co/papers/2305.13304)] [[Offical](https://github.com/aiwaves-cn/RecurrentGPT)]
+
 
 ---
 
