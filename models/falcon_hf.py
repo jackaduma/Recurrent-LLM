@@ -7,7 +7,7 @@ import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from auto_gptq import AutoGPTQForCausalLM, BaseQuantizeConfig
 
-max_token: int = 256  # 10000 # 64
+max_token: int = 10000  # 10000 # 64
 temperature: float = 0.75
 top_p = 0.9
 use_lora = False
