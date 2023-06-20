@@ -31,6 +31,11 @@ use_lora = False
 
 
 def load_model(use_lora=True, LOAD_IN_8BIT=False):
+    """
+    params: 
+    use_lora=True, LOAD_IN_8BIT=False
+    use_lora=False. LOAD_IN_8BIT=True
+    """
     tokenizer = AutoTokenizer.from_pretrained("baichuan-inc/baichuan-7B",
                                               trust_remote_code=True)
     model = AutoModelForCausalLM.from_pretrained("baichuan-inc/baichuan-7B",
