@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 # @author: Kun
 
+from transformers import TextStreamer
+
 from models.baichuan_hf import max_token, temperature, top_p
 from common import torch_gc
 from global_config import lang_opt
@@ -21,11 +23,24 @@ def get_api_response(model, tokenizer, content: str, max_tokens=None):
     print(content)
     print("<==="+"="*100)
 
-    inputs = tokenizer(content, return_tensors='pt')
-    inputs = inputs.to('cuda:0')
-    pred = model.generate(**inputs, max_new_tokens=max_token,
-                          top_p=top_p, temperature=temperature, repetition_penalty=1.1)
-    response = tokenizer.decode(pred.cpu()[0], skip_special_tokens=True)
+    streamer = TextStreamer(tokenizer, 
+                            skip_prompt=True,
+                            skip_special_tokens=True
+                            )
+
+    # inputs = tokenizer(content, return_tensors='pt')
+    inputs = tokenizer("<human>:{}\n<bot>:".format(content), return_tensors='pt')
+    # inputs = inputs.to('cuda') # UserWarning: You are calling .generate() with the `input_ids` being on a device type different than your model's device. `input_ids` is on cuda, whereas the model is on cpu. You may experience unexpected behaviors or slower generation. Please make sure that you have put `input_ids` to the correct device by calling for example input_ids = input_ids.to('cpu') before running `.generate()`.
+    inputs = inputs.to('cpu')
+    generate_ids = model.generate(**inputs,
+                                  max_new_tokens=max_token,
+                                  top_p=top_p,
+                                  temperature=temperature,
+                                  repetition_penalty=1.1,
+                                  streamer=streamer,
+                                  )
+    response = tokenizer.decode(
+        generate_ids.cpu()[0], skip_special_tokens=True)
 
     torch_gc()
 
