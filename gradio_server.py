@@ -130,7 +130,8 @@ def step(short_memory, long_memory, instruction1, instruction2, instruction3, cu
 
         # Init writerGPT
         writer = AIWriter(input=writer_start_input, short_memory=start_short_memory, long_memory=[
-            init_paragraphs['Paragraph 1'], init_paragraphs['Paragraph 2'], init_paragraphs['Paragraph 3']], memory_index=None, embedder=embedder)
+            init_paragraphs['Paragraph 1'], init_paragraphs['Paragraph 2'], init_paragraphs['Paragraph 3']], memory_index=None, embedder=embedder,
+            model=llm_model, tokenizer=llm_tokenizer)
         cache["writer"] = writer
         cache["human"] = human
         writer.step()
@@ -174,7 +175,8 @@ def controled_step(short_memory, long_memory, selected_instruction, current_para
 
         # Init writerGPT
         writer = AIWriter(input=writer_start_input, short_memory=start_short_memory, long_memory=[
-            init_paragraphs['Paragraph 1'], init_paragraphs['Paragraph 2'], init_paragraphs['Paragraph 3']], memory_index=None, embedder=embedder)
+            init_paragraphs['Paragraph 1'], init_paragraphs['Paragraph 2'], init_paragraphs['Paragraph 3']], memory_index=None, embedder=embedder,
+            model=llm_model, tokenizer=llm_tokenizer)
         cache["writer"] = writer
         cache["human"] = human
         writer.step()
