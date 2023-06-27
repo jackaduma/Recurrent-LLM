@@ -38,14 +38,14 @@ def get_init_prompt(lang_opt, novel_type, description):
         Finally, write three different instructions for what to write next, each containing around five sentences. Each instruction should present a possible, interesting continuation of the story.
         The output format should follow these guidelines:
         名称： <name of the novel>
-        概述: <outline for the first chapter>
-        段落 1： <content for paragraph 1>
-        段落 2： <content for paragraph 2>
-        段落 3： <content for paragraph 3>
+        概述： <outline for the first chapter>
+        段落1： <content for paragraph 1>
+        段落2： <content for paragraph 2>
+        段落3： <content for paragraph 3>
         总结： <content of summary>
-        指令 1： <content for instruction 1>
-        指令 2： <content for instruction 2>
-        指令 3：<content for instruction 3>
+        指令1： <content for instruction 1>
+        指令2： <content for instruction 2>
+        指令3：<content for instruction 3>
 
         Make sure to be precise and follow the output format strictly.
         非常重要！请将输出信息内容全部转化为中文，注意要符合中文母语的语法和用词习惯。
