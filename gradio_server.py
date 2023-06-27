@@ -4,9 +4,9 @@
 
 import gradio as gr
 import random
-from human_simulator import Human
 from sentence_transformers import SentenceTransformer
-
+from human_simulator import Human
+from prompts.service_init import get_init_prompt
 from utils import get_init, parse_instructions
 from global_config import lang_opt, llm_model_opt
 
@@ -66,57 +66,7 @@ def init_prompt(novel_type, description):
     else:
         description = " about " + description
 
-    if "en" == lang_opt:
-        return f"""
-    Please write a {novel_type} novel{description} with 50 chapters. Follow the format below precisely:
-
-    Begin with the name of the novel.
-    Next, write an outline for the first chapter. The outline should describe the background and the beginning of the novel.
-    Write the first three paragraphs with their indication of the novel based on your outline. Write in a novelistic style and take your time to set the scene.
-    Write a summary that captures the key information of the three paragraphs.
-    Finally, write three different instructions for what to write next, each containing around five sentences. Each instruction should present a possible, interesting continuation of the story.
-    The output format should follow these guidelines:
-    Name: <name of the novel>
-    Outline: <outline for the first chapter>
-    Paragraph 1: <content for paragraph 1>
-    Paragraph 2: <content for paragraph 2>
-    Paragraph 3: <content for paragraph 3>
-    Summary: <content of summary>
-    Instruction 1: <content for instruction 1>
-    Instruction 2: <content for instruction 2>
-    Instruction 3: <content for instruction 3>
-
-    Make sure to be precise and follow the output format strictly.
-
-    """
-    elif "zh" == lang_opt:
-        return f"""
-    Please write a {novel_type} novel{description} with 50 chapters. Follow the format below precisely:
-
-    Begin with the name of the novel.
-    Next, write an outline for the first chapter. The outline should describe the background and the beginning of the novel.
-    Write the first three paragraphs with their indication of the novel based on your outline. Write in a novelistic style and take your time to set the scene.
-    Write a summary that captures the key information of the three paragraphs.
-    Finally, write three different instructions for what to write next, each containing around five sentences. Each instruction should present a possible, interesting continuation of the story.
-    The output format should follow these guidelines:
-    名称： <name of the novel>
-    概述: <outline for the first chapter>
-    段落 1： <content for paragraph 1>
-    段落 2： <content for paragraph 2>
-    段落 3： <content for paragraph 3>
-    总结： <content of summary>
-    指令 1： <content for instruction 1>
-    指令 2： <content for instruction 2>
-    指令 3：<content for instruction 3>
-
-    Make sure to be precise and follow the output format strictly.
-    非常重要！请将输出信息内容全部转化为中文，注意要符合中文母语的语法和用词习惯。
-
-
-    """
-
-    else:
-        raise Exception(f"not supported language: {lang_opt}")
+    return get_init_prompt(lang_opt, novel_type, description)
 
 
 def init(novel_type, description, request: gr.Request):
@@ -262,7 +212,7 @@ with gr.Blocks(title="RecurrentGPT", css="footer {visibility: hidden}", theme="d
         # Recurrent-LLM 
         Interactive Generation of (Arbitrarily) Long Texts with Human-in-the-Loop
         """)
-    elif "zh" == lang_opt:
+    elif lang_opt in ["zh1", "zh2"]:
         gr.Markdown(
             """
         # Recurrent-LLM 
@@ -288,7 +238,7 @@ with gr.Blocks(title="RecurrentGPT", css="footer {visibility: hidden}", theme="d
                 if "en" == lang_opt:
                     gr.Examples(["Science Fiction", "Romance", "Mystery", "Fantasy",
                                  "Historical", "Horror", "Thriller", "Western", "Young Adult", ], inputs=[novel_type])
-                elif "zh" == lang_opt:
+                elif lang_opt in ["zh1", "zh2"]:
                     gr.Examples(["科幻故事", "青春伤痛文学", "爱到死去活来", "搞笑",
                                  "幽默", "鬼故事", "喜剧", "童话", "魔法世界", ], inputs=[novel_type])
                 else:
@@ -301,7 +251,7 @@ with gr.Blocks(title="RecurrentGPT", css="footer {visibility: hidden}", theme="d
                 with gr.Box():
                     if "en" == lang_opt:
                         gr.Markdown("### Memory Module\n")
-                    elif "zh" == lang_opt:
+                    elif lang_opt in ["zh1", "zh2"]:
                         gr.Markdown("### 剧情模型\n")
 
                     short_memory = gr.Textbox(
@@ -322,7 +272,7 @@ with gr.Blocks(title="RecurrentGPT", css="footer {visibility: hidden}", theme="d
                 with gr.Box():
                     if "en" == lang_opt:
                         gr.Markdown("### Instruction Module\n")
-                    elif "zh" == lang_opt:
+                    elif lang_opt in ["zh1", "zh2"]:
                         gr.Markdown("### 选项模型\n")
 
                     with gr.Row():
@@ -366,7 +316,7 @@ with gr.Blocks(title="RecurrentGPT", css="footer {visibility: hidden}", theme="d
                 if "en" == lang_opt:
                     gr.Examples(["Science Fiction", "Romance", "Mystery", "Fantasy",
                                  "Historical", "Horror", "Thriller", "Western", "Young Adult", ], inputs=[novel_type])
-                elif "zh" == lang_opt:
+                elif lang_opt in ["zh1", "zh2"]:
                     gr.Examples(["科幻小说", "爱情小说", "推理小说", "奇幻小说",
                                  "玄幻小说", "恐怖", "悬疑", "惊悚", "武侠小说", ], inputs=[novel_type])
 
@@ -377,7 +327,7 @@ with gr.Blocks(title="RecurrentGPT", css="footer {visibility: hidden}", theme="d
                 with gr.Box():
                     if "en" == lang_opt:
                         gr.Markdown("### Memory Module\n")
-                    elif "zh" == lang_opt:
+                    elif lang_opt in ["zh1", "zh2"]:
                         gr.Markdown("### 剧情模型\n")
 
                     short_memory = gr.Textbox(
@@ -389,7 +339,7 @@ with gr.Blocks(title="RecurrentGPT", css="footer {visibility: hidden}", theme="d
                 with gr.Box():
                     if "en" == lang_opt:
                         gr.Markdown("### Instruction Module\n")
-                    elif "zh" == lang_opt:
+                    elif lang_opt in ["zh1", "zh2"]:
                         gr.Markdown("### 选项模型\n")
 
                     with gr.Row():

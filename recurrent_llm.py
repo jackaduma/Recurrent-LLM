@@ -7,6 +7,7 @@ import random
 from sentence_transformers import util
 
 from utils import get_content_between_a_b
+from prompts.llm_query import get_input_text
 from global_config import lang_opt, llm_model_opt
 
 if "openai" == llm_model_opt:
@@ -63,88 +64,7 @@ class RecurrentLLM:
         else:
             new_character_prompt = ""
 
-        if "en" == lang_opt:
-            input_text = f"""I need you to help me write a novel. Now I give you a memory (a brief summary) of 400 words, you should use it to store the key content of what has been written so that you can keep track of very long context. For each time, I will give you your current memory (a brief summary of previous stories. You should use it to store the key content of what has been written so that you can keep track of very long context), the previously written paragraph, and instructions on what to write in the next paragraph. 
-        I need you to write:
-        1. Output Paragraph: the next paragraph of the novel. The output paragraph should contain around 20 sentences and should follow the input instructions.
-        2. Output Memory: The updated memory. You should first explain which sentences in the input memory are no longer necessary and why, and then explain what needs to be added into the memory and why. After that you should write the updated memory. The updated memory should be similar to the input memory except the parts you previously thought that should be deleted or added. The updated memory should only store key information. The updated memory should never exceed 20 sentences!
-        3. Output Instruction:  instructions of what to write next (after what you have written). You should output 3 different instructions, each is a possible interesting continuation of the story. Each output instruction should contain around 5 sentences
-        Here are the inputs: 
-
-        Input Memory:  
-        {self.short_memory}
-
-        Input Paragraph:
-        {input_paragraph}
-
-        Input Instruction:
-        {input_instruction}
-
-        Input Related Paragraphs:
-        {input_long_term_memory}
-        
-        Now start writing, organize your output by strictly following the output format as below:
-        Output Paragraph: 
-        <string of output paragraph>, around 20 sentences.
-
-        Output Memory: 
-        Rational: <string that explain how to update the memory>;
-        Updated Memory: <string of updated memory>, around 10 to 20 sentences
-
-        Output Instruction: 
-        Instruction 1: <content for instruction 1>, around 5 sentences
-        Instruction 2: <content for instruction 2>, around 5 sentences
-        Instruction 3: <content for instruction 3>, around 5 sentences
-
-        Very important!! The updated memory should only store key information. The updated memory should never contain over 500 words!
-        Finally, remember that you are writing a novel. Write like a novelist and do not move too fast when writing the output instructions for the next paragraph. Remember that the chapter will contain over 10 paragraphs and the novel will contain over 100 chapters. And this is just the beginning. Just write some interesting staffs that will happen next. Also, think about what plot can be attractive for common readers when writing output instructions. 
-
-        Very Important: 
-        You should first explain which sentences in the input memory are no longer necessary and why, and then explain what needs to be added into the memory and why. After that, you start rewrite the input memory to get the updated memory. 
-        {new_character_prompt}
-        """
-        elif "zh" == lang_opt:
-            input_text = f"""I need you to help me write a novel. Now I give you a memory (a brief summary) of 400 words, you should use it to store the key content of what has been written so that you can keep track of very long context. For each time, I will give you your current memory (a brief summary of previous stories. You should use it to store the key content of what has been written so that you can keep track of very long context), the previously written paragraph, and instructions on what to write in the next paragraph. 
-        I need you to write:
-        1. Output Paragraph: the next paragraph of the novel. The output paragraph should contain around 20 sentences and should follow the input instructions.
-        2. Output Memory: The updated memory. You should first explain which sentences in the input memory are no longer necessary and why, and then explain what needs to be added into the memory and why. After that you should write the updated memory. The updated memory should be similar to the input memory except the parts you previously thought that should be deleted or added. The updated memory should only store key information. The updated memory should never exceed 20 sentences!
-        3. Output Instruction:  instructions of what to write next (after what you have written). You should output 3 different instructions, each is a possible interesting continuation of the story. Each output instruction should contain around 5 sentences
-        4. 非常重要！请将输出信息内容全部转化为中文，注意要符合中文母语的语法和用词习惯。
-        Here are the inputs: 
-
-        Input Memory:  
-        {self.short_memory}
-
-        Input Paragraph:
-        {input_paragraph}
-
-        Input Instruction:
-        {input_instruction}
-
-        Input Related Paragraphs:
-        {input_long_term_memory}
-        
-        Now start writing, organize your output by strictly following the output format as below:
-        Output Paragraph: 
-        <string of output paragraph>, around 20 sentences.
-
-        Output Memory: 
-        Rational: <string that explain how to update the memory>;
-        Updated Memory: <string of updated memory>, around 10 to 20 sentences
-
-        Output Instruction: 
-        Instruction 1: <content for instruction 1>, around 5 sentences
-        Instruction 2: <content for instruction 2>, around 5 sentences
-        Instruction 3: <content for instruction 3>, around 5 sentences
-
-        Very important!! The updated memory should only store key information. The updated memory should never contain over 500 words!
-        Finally, remember that you are writing a novel. Write like a novelist and do not move too fast when writing the output instructions for the next paragraph. Remember that the chapter will contain over 10 paragraphs and the novel will contain over 100 chapters. And this is just the beginning. Just write some interesting staffs that will happen next. Also, think about what plot can be attractive for common readers when writing output instructions. 
-
-        Very Important: 
-        You should first explain which sentences in the input memory are no longer necessary and why, and then explain what needs to be added into the memory and why. After that, you start rewrite the input memory to get the updated memory. 
-        非常重要！请将输出信息内容全部转化为中文，注意要符合中文母语的语法和用词习惯。
-        {new_character_prompt}
-        """
+        input_text = get_input_text(lang_opt, self.short_memory, input_paragraph, input_instruction, input_long_term_memory, new_character_prompt)
 
         return input_text
 
