@@ -33,7 +33,7 @@ def get_content_between_a_b(a, b, text):
             raise Exception(
                 "not supported llm model name: {}".format(llm_model_opt))
 
-    elif "zh" == lang_opt:
+    elif lang_opt in ["zh1", "zh2"]:
         if "vicuna" == llm_model_opt:
             match = re.search(f"{a}(.*?)\n(.*?){b}", text, re.DOTALL)
         elif "openai" == llm_model_opt:
@@ -131,7 +131,7 @@ def get_init(init_text=None, text=None, response_file=None, model=None, tokenize
             paragraphs['Outline'] = get_content_between_a_b(
                 'Outline:', 'Paragraph', response)
 
-    elif "zh" == lang_opt:
+    elif lang_opt in ["zh1", "zh2"]:
         paragraphs['name'] = get_content_between_a_b('名称：', '概述：', response)
 
         paragraphs['Paragraph 1'] = get_content_between_a_b(
